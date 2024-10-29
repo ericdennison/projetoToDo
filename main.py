@@ -28,6 +28,14 @@ def adicionar_tarefa():
 
 
 
+def adicionar_item_tarefa(entrada):
+    frame_tarefa = tk.frame(canvas_interior, bg='white, bd=1, relief=tk.SOLID')
+
+    label_tarefa = tk.Label(frame_tarefa, text=tarefa, font=('Garamond', 16), bg='white', width=25, height=2, anchor='w')
+    label_tarefa.pack(side=tk.LEFT, fill=tk.X, padx=10, pady=5)
+
+    botao_editar = tk.Button(frame_tarefa, image=icon_editar, )
+
 
 # Cabeçalho
 fonte_cabecalho = font.Font(family='Garamond', size=24, weight='bold')
