@@ -28,13 +28,57 @@ def adicionar_tarefa():
 
 
 
-def adicionar_item_tarefa(entrada):
-    frame_tarefa = tk.frame(canvas_interior, bg='white, bd=1, relief=tk.SOLID')
+def adicionar_item_tarefa(tarefa):
+  
+
+    frame_tarefa = tk.Frame(canvas_interior, bg='white', bd=1, relief=tk.SOLID)
 
     label_tarefa = tk.Label(frame_tarefa, text=tarefa, font=('Garamond', 16), bg='white', width=25, height=2, anchor='w')
     label_tarefa.pack(side=tk.LEFT, fill=tk.X, padx=10, pady=5)
 
-    botao_editar = tk.Button(frame_tarefa, image=icon_editar, )
+    botao_editar = tk.Button(frame_tarefa, image=icon_editar, command=lambda f=frame_tarefa, l=label_tarefa: preparar_edicao(f, l), bg="white", relief=tk.FLAT)
+    botao_editar.pack(side=tk.RIGHT, padx=5)
+
+    botao_deletar = tk.Button(frame_tarefa, image=icon_deletar, command=lambda f=frame_tarefa: deletar_tarefa(f), bg="white", relief=tk.FLAT)
+    botao_deletar.pack(side=tk.RIGHT, padx=5)
+
+    frame_tarefa.pack(fill=tk.X, padx=5, pady=5)
+
+    checkbutton = ttk.Checkbutton(frame_tarefa, command=lambda label=label_tarefa: alterar_sublinhado(label))
+    checkbutton.pack(side=tk.RIGHT, padx=5)
+
+    canvas_interior.update_idletasks()
+    canvas.config(scrollregion=canvas.bbox("all"))
+
+def preparar_edicao(frame_tarefa, label_tarefa):
+    global frame_em_edicao
+    frame_em_edicao = frame_tarefa
+    entrada_tarefa.delete(0, tk.END)
+    entrada_tarefa.insert(0, label_tarefa.cget("text"))
+
+
+def atualizar_tarefa(nova_tarefa):
+    global frame_em_edicao
+    for widget in frame_em_edicao.winfo_children():
+        if isinstance(widget, tk.Label):
+            widget.config(text=nova_tarefa)
+
+def deletar_tarefa(frame_tarefa):
+    frame_tarefa.destroy()
+    canvas_interior.update_idletasks()
+    canvas.config(scrollregion=canvas.bbox("all"))
+
+def alterar_sublinhado(label):
+    fonte_atual = label.cget("font")
+    if "overstrike" in fonte_atual:
+        nova_fonte = fonte_atual.replace("overstrike", " ")
+    else:
+        nova_fonte = fonte_atual + " overstrike"
+    label.config(font=nova_fonte)
+
+# icone editar
+icon_editar = PhotoImage(file="editar.png").subsample(3,3)
+icon_deletar = PhotoImage(file="deletar.png").subsample(3,3)
 
 
 # Cabeçalho
@@ -50,7 +94,7 @@ entrada_tarefa = tk.Entry(frame, font=('Garamond', 14), relief=tk.FLAT, bg='whit
 entrada_tarefa.pack(side=tk.LEFT, padx=10)
 
 # Botão
-botao_adicionar = tk.Button(frame, text="Adicionar Tarefa", bg='#4CAF50', fg='white', height=1, width=15, font=('Roboto',11), relief=tk.FLAT)
+botao_adicionar = tk.Button(frame, command=adicionar_tarefa, text="Adicionar Tarefa", bg='#4CAF50', fg='white', height=1, width=15, font=('Roboto',11), relief=tk.FLAT)
 botao_adicionar.pack(side=tk.LEFT, padx=10)
 
 # Criar frame lista_tarefas rolagem
